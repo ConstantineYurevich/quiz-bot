@@ -80,7 +80,7 @@ async function sendReceive(ctx) {
               num++;
               options.push(num + '. ' + answer);
             }
-            options.push("\nВвведите число от 1 до " + num);
+            //options.push("\nВвведите число от 1 до " + num);
             sendGenericMessage(sender, options.join("\n"));
           }
         });
