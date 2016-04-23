@@ -1,7 +1,11 @@
 import route from 'koa-route'
 
-import webhook from './../webhook.js';
+import validate from './../webhooks/validate.js';
+import sendReceive from './../webhooks/send-receive.js';
+import test from './../test.js';
 
 export default [
-  route.get('/webhook', webhook),
+  route.get('/webhook', validate),
+  route.post('/webhook', sendReceive),
+  route.get('/', test),
 ];

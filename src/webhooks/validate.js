@@ -1,6 +1,4 @@
-import debug from './utils/debug.js';
-
-async function webhook(ctx) {
+async function validate(ctx) {
   const req = ctx.request;
   if (req.query['hub.verify_token'] === 'test' && req.query['hub.challenge']) {
     ctx.body = req.query['hub.challenge'];
@@ -9,4 +7,4 @@ async function webhook(ctx) {
   }
 }
 
-export default webhook;
+export default validate;
