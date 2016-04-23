@@ -9,6 +9,6 @@ const app = new Koa();
 
 app.use(compose(routes));
 
-app.listen(3000);
+app.listen((process.env.PORT || 3000));
 
 export default app;
