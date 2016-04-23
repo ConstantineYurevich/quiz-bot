@@ -1,4 +1,6 @@
 import request from 'request';
+import debug from './../utils/debug.js';
+
 
 const token = "CAACiSuaZB4vsBAPigCLLKHDZAyHF7FQKyaVaZBfsFJBMloABBFcfIUkQWaDdAZBen2WZATYUIcQjObaZA3mVYtymQyHoZAPpZCmsv7WggtQRCwcUyJUsfNXSVCfbj3zPqtIlNcgdleFG80mfjLMidnbHZApraeUi9owCkw9fmOxrN2dut87AZCoGZBooIjE3Ww4wEgZD";
 
@@ -28,7 +30,7 @@ function getQuestion(sender, answer, callback) {
   });
 }
 
-function sendGenericMessage(sender, text) {
+function sendGenericMessage(sender, text, callback) {
   const messageData = {
     text: text
   };
@@ -50,11 +52,15 @@ function sendGenericMessage(sender, text) {
     } else if (response.body.error) {
       console.log('Error: ', response.body.error);
     }
+    if (callback) {
+      callback();
+    }
   });
 }
 
 async function sendReceive(ctx) {
   const req = ctx.request;
+  ctx.body = 'OK';
   const messaging_events = req.body.entry[0].messaging;
   for (let i = 0; i < messaging_events.length; i++) {
     const event = req.body.entry[0].messaging[i];
@@ -66,17 +72,18 @@ async function sendReceive(ctx) {
         answer = parseInt(text);
       }
       getQuestion(sender, answer, function(payload) {
-        sendGenericMessage(sender, payload.question);
-        if (payload.answers && payload.answers.length > 0) {
-          let options = [];
-          let num = 0;
-          for (const answer of payload.answers) {
-            num++;
-            options.push(num + '. ' + answer);
+        sendGenericMessage(sender, payload.question, function() {
+          if (payload.answers && payload.answers.length > 0) {
+            const options = ['Варианты ответов:'];
+            let num = 0;
+            for (const answer of payload.answers) {
+              num++;
+              options.push(num + '. ' + answer);
+            }
+            options.push("\nВвведите число от 1 до " + num);
+            sendGenericMessage(sender, options.join("\n"));
           }
-          options.push("\nВвведите число от 1 до " + num);
-          sendGenericMessage(sender, options.join("\n"));
-        }
+        });
       });
     }
   }
