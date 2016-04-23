@@ -1,6 +1,9 @@
 {
   "name": "quiz-bot",
   "version": "1.0.0",
+  "engines": {
+    "node": "5.1.0"
+  },
   "description": "",
   "main": "src/index.js",
   "private": true,
